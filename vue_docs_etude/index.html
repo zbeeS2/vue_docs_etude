@@ -6,20 +6,53 @@
         <title>Hello vue!</title>
     </head>
     <body>
-        <div id="app"
-             v-bind:title="description_message"
-             style="border: solid 1px black;
-                    text-align: center;">
-            {{content}}
+        <div id="app4">
+            <ol>
+                <li v-for="todo in todo_arr">
+                    {{todo.task}}
+                </li>
+            </ol>
         </div>
     </body>
     <script>
-        var app = new Vue({
-            el: '#app',
+        var app1 = new Vue({
+            el: '#app1',
+            data: {
+                message: 'Hello Vue!'
+            }
+        })
+        app1.message = 'Halo Vue~'
+
+        var app2 = new Vue({
+            el: '#app2',
             data: {
                 content: '이곳에 마우스를 올려놓고 있으면...',
                 description_message: '이렇게 메세지가 나타납니다.'
             }
         })
+
+        var app3 = new Vue({
+            el: '#app3',
+            data:{
+                seen: true,
+                content: '이건 app3이야!'
+            }
+        })
+
+        function app3_mod(){
+            app3.seen = !app3.seen
+        }
+
+        var app4 = new Vue({
+            el: '#app4',
+            data:{
+                todo_arr: [
+                    {task: 'Go 공부'},
+                    {task: 'Vue.js 공부'},
+                    {task: '영어 공부'}
+                ]
+            }
+        })
+        app4.todo_arr.push({task: '로스트아크'})
     </script>
 </html>
