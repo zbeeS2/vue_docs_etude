@@ -6,18 +6,20 @@
         <title>Hello vue!</title>
     </head>
     <body>
-        <div id="app">
-            {{message}}
+        <div id="app"
+             v-bind:title="description_message"
+             style="border: solid 1px black;
+                    text-align: center;">
+            {{content}}
         </div>
     </body>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
-                message: 'Hello Vue!!'
+                content: '이곳에 마우스를 올려놓고 있으면...',
+                description_message: '이렇게 메세지가 나타납니다.'
             }
         })
-
-        app.message = 'Halo Vue~'
     </script>
 </html>
