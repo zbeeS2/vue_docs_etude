@@ -6,11 +6,13 @@
         <title>Hello vue!</title>
     </head>
     <body>
-        <div id="app4">
+        <div id = "app6">
             <ol>
-                <li v-for="todo in todo_arr">
-                    {{todo.task}}
-                </li>
+                <todo-item
+                    v-for="item in contentList"
+                    v-bind:todo="item"
+                    v-bind:key="item.id">
+                </todo-item>
             </ol>
         </div>
     </body>
@@ -54,5 +56,35 @@
             }
         })
         app4.todo_arr.push({task: '로스트아크'})
+
+        var app5 = new Vue({
+            el: '#app5',
+            data:{
+                content: '안녕하세요 반갑습니다!',
+            },
+            methods:{
+                reverse_text: function(){
+                    this.content = this.content.split('').reverse().join('')
+                }
+            }
+        })
+        
+        Vue.component('todo-item', {
+            props: ['todo'],
+            template: '<li> {{todo.text}} </li>'
+        })
+
+        let app6 = new Vue({
+            el: '#app6',
+            data:{
+                contentList: [
+                    {id: 1, text: "할일1!"},
+                    {id: 2, text: "할일2!"},
+                    {id: 3, text: "할일3!"},
+                    {id: 4, text: "할일4!"},
+                    {id: 5, text: "할일5!"}
+                ]
+            }
+        })
     </script>
 </html>
