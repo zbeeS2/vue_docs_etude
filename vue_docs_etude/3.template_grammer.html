@@ -6,9 +6,11 @@
         <title>Hello vue!</title>
     </head>
     <body>
-        <div id="app2" style="border: 1px solid black;">
-            <p> mustache Interpolation : {{ rawHtml }} </p>
-            <p> v-html Interpolation : <span v-html="rawHtml"></span> </p>
+        <div id="app4" style="border: 1px solid black;">
+            <p> this is val : {{ val }} </p>
+            <p> this is val+1 : {{ val + 1 }} </p>
+            <p> this is val is greater than 10 ? {{ val > 10 ? 'YES' : 'NO' }} </p>
+            <p v-bind:id="'test-' + val">this id is test-{{ val }}</p>
         </div>
     </body>
     <script>
@@ -27,5 +29,30 @@
                 rawHtml: '<span style="color: red;"> this is red color msg. </span>'
             }
         });
+
+        function goRed(el){
+            document.getElementById(el).style.color="red";
+        }
+
+        let app3 = new Vue({
+            el: "#app3",
+            data:{
+                dynamicId: "dId"
+            },
+            mounted: function(){
+                goRed(this.dynamicId);
+            }
+        });
+
+        let app4 = new Vue({
+            el: "#app4",
+            data:{
+                val: 10
+            },
+            mounted: function(){
+                goRed(`test-${this.val}`)
+            }
+        });
+
     </script>
 </html>
