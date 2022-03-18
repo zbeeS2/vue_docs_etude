@@ -74,17 +74,16 @@
             template: '<li> {{todo.text}} </li>'
         })
 
-        let app6 = new Vue({
-            el: '#app6',
-            data:{
-                contentList: [
+        let data6 = {contentList: [
                     {id: 1, text: "할일1!"},
                     {id: 2, text: "할일2!"},
                     {id: 3, text: "할일3!"},
                     {id: 4, text: "할일4!"},
                     {id: 5, text: "할일5!"}
-                ]
-            }
-        })
+                ]}
+        let app6 = new Vue({
+            el: '#app6',
+            data: data6
+        });
     </script>
 </html>

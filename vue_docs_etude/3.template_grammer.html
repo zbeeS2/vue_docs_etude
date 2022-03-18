@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <!--import vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <title>Hello vue!</title>
+    </head>
+    <body>
+        <div id="app2" style="border: 1px solid black;">
+            <p> mustache Interpolation : {{ rawHtml }} </p>
+            <p> v-html Interpolation : <span v-html="rawHtml"></span> </p>
+        </div>
+    </body>
+    <script>
+        let app1 = new Vue({
+            el: "#app1",
+            data:{
+                msg: "this is message."
+            }
+        });
+
+        app1.msg = "this is modified message."
+
+        let app2 = new Vue({
+            el: "#app2",
+            data:{
+                rawHtml: '<span style="color: red;"> this is red color msg. </span>'
+            }
+        });
+    </script>
+</html>
