@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <!--import vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <title>Hello vue!</title>
+
+        <style>
+            .active {
+                background-color: lightblue;
+            }
+
+            .text-danger {
+                background-color: red;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app2" style="border: 1px solid black;">
+            <button :class="[isActive ? activeClass : dangerClass]" :disabled="!isActive"> 활성화/비활성화 되는 버-튼 </button><br>
+            <button @click="change"> 활성화/비활성화 되는 버-튼을 활성화/비활성화 하는 버-튼 </button>
+        </div>
+    </body>
+    <script>
+        let app1 = new Vue({
+            el: "#app1",
+            data:{
+                isActive: true,
+                isDanger: false
+            },
+            methods:{
+                change: function(){
+                    this.isActive = !this.isActive;
+                    this.isDanger = !this.isDanger;
+                }
+            }
+        });
+
+        let app2 = new Vue({
+            el: "#app2",
+            data: {
+                isActive: true,
+
+                activeClass: "active",
+                dangerClass: "text-danger"
+            },
+            methods:{
+                change: function(){
+                    this.isActive = !this.isActive;
+                }
+            }
+        })
+    </script>
+</html>
