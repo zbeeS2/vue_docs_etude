@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <!--import vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <title>Hello vue!</title>
+    </head>
+    <body>
+        <div id="app5" style="border: 1px solid black;">
+            <button @click="pushObject">push object</button>
+            <div v-for="(value, key) in objects">
+                {{key}} : {{value}}
+            </div>
+        </div>
+    </body>
+    <script>
+        let app1 = new Vue({
+            el: "#app1",
+            data: {
+                items:[
+                    {message: "hi"},
+                    {message: "hello"}
+                ]
+            }
+        });
+
+        let app2 = new Vue({
+            el: "#app2",
+            data: {
+                objects: {
+                    name: "John Doe",
+                    hobby: "Game",
+                    movie: "i like movie!"
+                }
+            }
+        });
+
+        let app3 = new Vue({
+            el: "#app3",
+            data: {
+                items: [
+                    {id: 123, name: "cheese"},
+                    {id: 114, name: "pepper"},
+                    {id: 342, name: "cola"}
+                ]
+            }
+        });
+
+        let app4 = new Vue({
+            el: "#app4",
+            data: {
+                items: [
+                    {name: "cheeper"}
+                ]
+            },
+            methods:{
+                pushItem: function(){
+                    this.items.push({name: "haha"});
+                }
+            }
+        });
+
+        let app5 = new Vue({
+            el: "#app5",
+            data: {
+                objects: {
+                    name: "John Doe",
+                    hobby: "Game",
+                    movie: "i like movie!"
+                }
+            },
+            methods:{
+                pushObject: function(){
+                    Vue.set(this.objects, 'music', 'all');
+                }
+            }
+        });
+    </script>
+</html>

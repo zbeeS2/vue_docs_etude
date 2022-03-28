@@ -17,9 +17,8 @@
         </style>
     </head>
     <body>
-        <div id="app2" style="border: 1px solid black;">
-            <button :class="[isActive ? activeClass : dangerClass]" :disabled="!isActive"> 활성화/비활성화 되는 버-튼 </button><br>
-            <button @click="change"> 활성화/비활성화 되는 버-튼을 활성화/비활성화 하는 버-튼 </button>
+        <div id="app4" style="border: 1px solid black;">
+            <div :style="[ redColor, boldFont ]">빨간글씨</div>
         </div>
     </body>
     <script>
@@ -50,6 +49,25 @@
                     this.isActive = !this.isActive;
                 }
             }
-        })
+        });
+
+        let app3 = new Vue({
+            el: "#app3",
+            data: {
+                fontColor: "red"
+            }
+        });
+
+        let app4 = new Vue({
+            el: "#app4",
+            data: {
+                redColor: {
+                    color: "red"
+                },
+                boldFont: {
+                    fontWeight: "bold"
+                }
+            }
+        });
     </script>
 </html>
