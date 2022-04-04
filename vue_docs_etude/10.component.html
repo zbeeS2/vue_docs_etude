@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <!--import vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <title>Hello vue!</title>
+    </head>
+    <body>
+        <div id="app">
+            <global-component></global-component>
+            <local-component></local-component>
+            <simple-counter></simple-counter>
+            <simple-counter></simple-counter>
+            <simple-counter></simple-counter>
+            <br>
+            <simple-counter2></simple-counter2>
+            <simple-counter2></simple-counter2>
+            <simple-counter2></simple-counter2>
+        </div>
+    </body>
+    <script>
+        Vue.component('global-component', {
+            template: "<div>글로벌 컴포넌트!</div>"
+        })
+
+        let child = {
+            template: "<div>지역 컴포넌트!</div>"
+        }
+
+        let data = { counter: 0 }
+        Vue.component('simple-counter', {
+            template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+            // 전역변수 data를 참조하기 때문에 생성된 버튼은 여러개더라도 같은 값을 공유함.
+            data: function () {
+                return data
+            }
+        })
+
+        Vue.component('simple-counter2', {
+            template: '<button v-on:click="counter += 1">{{ counter }}</button>',
+            // 각자가 각각의 상태를 갖기 때문에 공유하지 않음.
+            data: function () {
+                return {
+                    counter: 0
+                }
+            }
+        })
+
+        let app = new Vue({
+            el: "#app",
+            components: {
+                'local-component': child
+            }
+        })
+    </script>
+</html>

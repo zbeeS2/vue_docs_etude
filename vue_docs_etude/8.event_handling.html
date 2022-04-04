@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <!--import vue framework-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <title>Hello vue!</title>
+    </head>
+    <body>
+        <div id="app">
+            <button @click="counter += 1">누른 횟수 : {{counter}}</button>
+            <button @click="greet">Greet</button>
+            <button @click="say('hi')">say hi</button>
+            <button @click="warn('From cannot be submitted yet.', $event)">Submit</button>
+
+            <!--클릭이벤트 전파 중단-->
+            <a @click.stop="doThis"></a>
+
+            <!-- 제출 이벤트가 페이지를 다시 로드 하지 않음 -->
+            <form @submit.prevent="onSubmit"></form>
+
+            <!-- 수식어는 체이닝 가능 -->
+            <a @click.stop.prevent="doThat"></a>
+            <!-- 체이닝 시 주의사항 : 입력한 순서대로 작동함. @click.prevent.self : 모든 클릭 방지 / @click.self.prevent : 자신만 클릭 방지 -->
+
+            <!-- 단순히 수식어만 사용할 수 있음 -->
+            <form @submit.prevent></form>
+
+            <!-- 이벤트 리스너를 추가할 때 캡처모드를 사용 -->
+            <!-- 즉, 내부 엘리먼트를 대상으로 하는 이벤트가 해당 엘리먼트에서 처리되기 전에 여기서 처리. -->
+            <div @click.capture="doThis">...</div>
+
+            <!-- event.target이 엘리먼트 자체인 경우에만 트리거를 처리 -->
+            <!-- 자식 엘리먼트에서는 안됨 -->
+            <div @click.self="doThat">...</div>
+
+            <!-- 한 번만 트리거 가능한 이벤트 -->
+            <a @click.once="doThis"></a>
+
+            <!-- 스크롤 기본 이벤트가 취소되지 않음을 선언 -->
+            <!-- prevent와 passive는 같이 쓰면 에러 발생하니 조심! -->
+            <div @scroll.passive="onScroll">...</div>
+
+            <!-- 키를 이름으로 호출할 수 있다! 엔터키 누르면 submit() 호출 -->
+            <!-- $event.key === 'enter' 일 때만 호출. -->
+            <!-- 키코드(숫자)를 이용한 호출은 일부 키의 경우 일관성 없는 값을 가지고 있을 수 있으므로, 별칭을 이용해 호출하는 것을 권장. -->
+            <input @keyup.enter="submit">
+
+            <!-- 조합키 사용(ctrl, alt, shift, meta) -->
+            <!-- meta : 맥에서는 command, 윈도우에서는 윈도우키-->
+            <!-- 조합키는 단독으로 눌리는 것만으로는 작동하지 않음. -->
+            <!-- Alt + C -->
+            <input @keyup.alt.67="clear">
+
+            <!-- ctrl + click -->
+            <div @click.ctrl="doSomething">doSomething</div>
+
+            <!-- exact : 정확한 조합으로 눌려야 함을 선언. -->
+            <!-- 컨트롤 알트 쉬프트 커맨드 클릭 해도 작동함 -->
+            <button @click.ctrl="onCtrlClick">A</button>
+
+            <!-- 정확히 컨트롤 클릭 해야만 작동함. 컨트롤 알트 클릭 그런거 안 된다.-->
+            <button @click.ctrl.exact="onCtrlClick">A</button>
+
+            <!-- 아무 조합키도 안 눌린 채로 클릭만 돼야 작동함. -->
+            <button @click.exact="onlyClick">A</button>
+
+            <!-- 마우스 버튼 수식어 -->
+            <div @click.left="leftClick">left</div>
+            <!-- 조합키랑 같이 누르면 작동 안 함 -->
+            <div @click.right.exact="rightClick">right</div>
+            <div @click.middle="middleClick">middle</div>
+        </div>
+    </body>
+    <script>
+        let app1 = new Vue({
+            el: '#app',
+            data: {
+                counter: 0,
+                name: 'Vue.js'
+            },
+            methods: {
+                greet: function (event) {
+                    // 네이티브 이벤트를 받아 호출 가능
+                    alert('Hello ' + this.name + '!')
+
+                    if(event) {
+                        alert(event.target.tagName)
+                    }
+                },
+                say: function(message){
+                    // 파라미터를 받아 호출 가능
+                    alert(message)
+                },
+                warn: function (message, event){
+                    // warn('message', $event) 형식으로 호출 시 네이티브 이벤트 호출 가능
+                    if(event) event.preventDefault()
+                    alert(message)
+                },
+                leftClick: () => { alert('left!') },
+                rightClick: () => { alert('right!') },
+                middleClick: () => { alert('middle!') }
+            }
+        })
+
+        // keyCode 직접 선언. 아래 예시는 f1키 지정하는 것.
+        Vue.config.keyCodes.f1 = 112
+    </script>
+</html>
