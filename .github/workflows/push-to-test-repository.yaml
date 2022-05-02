@@ -20,16 +20,24 @@ jobs:
           githash=$(git rev-parse --short "$GITHUB_SHA")
           echo "githash=$githash" >> $GITHUB_ENV
 
-      - name: Generate And Push Test File
-        run: |          
-          git config --global user.email "zabee@codebrick.co"
-          git config --global user.name "yongbin"     
-
-          git clone https://github.com/zbeeS2/test.git
+      - name: Generate test.file
+        run: |
+          mkdir test
           cd test
           touch test.file
-          echo "this is test" >> test.file
+          echo "this is test file" >> test.file
 
-          git add test.file
-          git commit -m "add test.file with ${{ env.githash }}"
-          git push origin       
+      - name: Generate And Push Test File
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.test }}
+        with:
+          source-directory: 'test'
+          destination-github-username: 'zbeeS2'
+          destination-repository-name: 'test'
+          user-email: zabee@codebrick.co
+          target-branch: main
+
+        
+        
+        
