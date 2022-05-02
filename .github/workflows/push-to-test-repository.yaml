@@ -20,6 +20,9 @@ jobs:
 
       - name: Generate And Push Test File
         run: |          
+          git config --global user.email "zabee@codebrick.co"
+          git config --global user.name "yongbin"     
+
           git clone https://github.com/zbeeS2/test.git
           cd test
           touch test.file
