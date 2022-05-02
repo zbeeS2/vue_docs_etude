@@ -18,18 +18,13 @@ jobs:
           githash=$(git rev-parse --short "$GITHUB_SHA")
           echo "githash=$githash" >> $GITHUB_ENV
 
-      - name: Git Clone - Test Repository
+      - name: Generate And Push Test File
         run: |          
           git clone https://github.com/zbeeS2/test.git
-
-      - name: Generate Test File
-        run: |
           cd test
           touch test.file
           echo "this is test" >> test.file
 
-      - name: git push test.file
-        run: |
           git add test.file
           git commit -m "add test.file with ${{ env.githash }}"
-          git push origin
+          git push origin       
