@@ -30,4 +30,4 @@ jobs:
 
           git add test.file
           git commit -m "add test.file with ${{ env.githash }}"
-          git push origin       
+          git push main       
