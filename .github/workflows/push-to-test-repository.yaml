@@ -27,6 +27,7 @@ jobs:
           cd test
           touch test.file
           echo "this is test" >> test.file
+          echo $(ls)
 
           git add test.file
           git commit -m "add test.file with ${{ env.githash }}"
