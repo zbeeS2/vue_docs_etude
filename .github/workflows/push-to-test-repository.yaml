@@ -11,6 +11,8 @@ jobs:
     name: Push to test repository
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.test }}
 
       - name: Getting Commit Hash
         shell: bash
@@ -27,8 +29,7 @@ jobs:
           cd test
           touch test.file
           echo "this is test" >> test.file
-          echo $(ls)
 
           git add test.file
           git commit -m "add test.file with ${{ env.githash }}"
-          git push main       
+          git push origin       
