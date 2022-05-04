@@ -15,7 +15,7 @@ jobs:
           token: ${{ secrets.test }}
 
       - uses: dorny/paths-filter@v2
-          id: paths
+          id: changes
           with:
             filters: |
               not_allowed:
@@ -34,7 +34,7 @@ jobs:
           touch test.file
           echo "this is test file" >> test.file
 
-      - if: steps.paths.outputs.not_allowed == 'false'
+      - if: steps.changes.outputs.not_allowed == 'false'
         name: Generate And Push Test File
         uses: cpina/github-action-push-to-another-repository@main
         env:
