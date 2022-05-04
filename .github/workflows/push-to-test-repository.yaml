@@ -19,7 +19,7 @@ jobs:
           with:
             filters: |
               not_allowed:
-                - ['test.file.test']
+                - 'test.file.test'
 
       - name: Getting Commit Hash
         shell: bash
