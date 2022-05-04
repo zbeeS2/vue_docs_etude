@@ -11,15 +11,15 @@ jobs:
     name: Push to test repository
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.test }}
+        # with:
+        #   token: ${{ secrets.test }}
 
       - uses: dorny/paths-filter@v2
-          id: filter
-          with:
-            filters: |
-              not_allowed:
-                - test.file.test
+        id: filter
+        with:
+          filters: |
+            not_allowed:
+              - test.file.test
 
       - name: Getting Commit Hash
         shell: bash
