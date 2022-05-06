@@ -1,0 +1,18 @@
+# Check gen/ directory generatable using the modified contents
+name: CheckGenGeneratable
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-generatable-by-proto:
+    runs-on: ubuntu-lastest
+    name: Generatable check
+    steps:
+      - uses: actions/checkout@v2
+        name: checkout
+      
+      - name: Run ./build.sh
+        run: |
+          echo "Hello world!"
