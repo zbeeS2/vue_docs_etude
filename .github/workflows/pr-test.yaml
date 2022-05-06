@@ -15,4 +15,5 @@ jobs:
       
       - name: Toast
         run: |
-          echo "Hello world!" > test.file
+          cd idl
+          ./build.sh
