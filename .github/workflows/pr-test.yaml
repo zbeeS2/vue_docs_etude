@@ -2,8 +2,6 @@
 name: CheckGenGeneratable
 on:
   pull_request:
-    paths:
-      - "idl/proto/**"
     branches:
       - main
 
