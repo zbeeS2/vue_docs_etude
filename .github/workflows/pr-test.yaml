@@ -7,9 +7,9 @@ on:
       - main
 
 jobs:
-  check-generatable:
+  test:
     runs-on: ubuntu-lastest
-    name: Generatable check
+    name: TEST
     steps:
       - uses: actions/checkout@v2
       
