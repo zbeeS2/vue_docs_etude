@@ -16,3 +16,8 @@ jobs:
       - name: Run ./build.sh
         run: |
           echo "Hello world!"
+
+      - name: force stop
+        shell: bash
+        run: |
+          exit 1
