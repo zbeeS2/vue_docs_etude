@@ -1,4 +1,3 @@
-# Check gen/ directory generatable using the modified contents
 name: Test
 
 on:
