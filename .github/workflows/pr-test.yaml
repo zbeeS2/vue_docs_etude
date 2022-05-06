@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  check-generatable-by-proto:
+  check-generatable:
     runs-on: ubuntu-lastest
     name: Generatable check
     steps:
@@ -15,8 +15,3 @@ jobs:
       - name: Run ./build.sh
         run: |
           echo "Hello world!"
-
-      - name: force stop
-        shell: bash
-        run: |
-          exit 1
