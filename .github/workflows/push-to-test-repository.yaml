@@ -1,50 +1,50 @@
-# name: PushToTestRepository
+name: PushToTestRepository
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
+on:
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   push-to-test-repository:
-#     runs-on: ubuntu-latest
-#     name: Push to test repository
-#     steps:
-#       - uses: actions/checkout@v2
-#         # with:
-#         #   token: ${{ secrets.test }}
+jobs:
+  push-to-test-repository:
+    runs-on: ubuntu-latest
+    name: Push to test repository
+    steps:
+      - uses: actions/checkout@v2
+        # with:
+        #   token: ${{ secrets.test }}
 
-#       - uses: dorny/paths-filter@v2
-#         id: filter
-#         with:
-#           filters: |
-#             not_allowed:
-#               - test.file.test
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            not_allowed:
+              - test.file.test
 
-#       - name: Getting Commit Hash
-#         shell: bash
-#         run: |
-#           githash=$(git rev-parse --short "$GITHUB_SHA")
-#           echo "githash=$githash" >> $GITHUB_ENV
+      - name: Getting Commit Hash
+        shell: bash
+        run: |
+          githash=$(git rev-parse --short "$GITHUB_SHA")
+          echo "githash=$githash" >> $GITHUB_ENV
 
-#       - name: Generate test.file
-#         run: |
-#           mkdir test
-#           cd test
-#           touch test.file
-#           echo "this is test file" >> test.file
+      - name: Generate test.file
+        run: |
+          mkdir test
+          cd test
+          touch test.file
+          echo "this is test file" >> test.file
 
-#       - if: steps.filter.outputs.not_allowed == 'false'
-#         name: Generate And Push Test File
-#         uses: cpina/github-action-push-to-another-repository@main
-#         env:
-#           API_TOKEN_GITHUB: ${{ secrets.test }}
-#         with:
-#           source-directory: 'test'
-#           destination-github-username: 'zbeeS2'
-#           destination-repository-name: 'test'
-#           user-email: zabee@codebrick.co
-#           target-branch: main
+      # - if: steps.filter.outputs.not_allowed == 'false'
+      #   name: Generate And Push Test File
+      #   uses: cpina/github-action-push-to-another-repository@main
+      #   env:
+      #     API_TOKEN_GITHUB: ${{ secrets.test }}
+      #   with:
+      #     source-directory: 'test'
+      #     destination-github-username: 'zbeeS2'
+      #     destination-repository-name: 'test'
+      #     user-email: zabee@codebrick.co
+      #     target-branch: main
 
         
         
