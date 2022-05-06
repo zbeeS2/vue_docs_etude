@@ -1,5 +1,5 @@
 # Check gen/ directory generatable using the modified contents
-name: CheckGenGeneratable
+name: Test
 
 on:
   pull_request:
@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Run ./build.sh
+      - name: Toast
         run: |
           echo "Hello world!" > test.file
