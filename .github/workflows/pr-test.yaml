@@ -23,11 +23,11 @@ jobs:
           key: ${{env.cache-name}}
 
       - name: cache check
-        if: steps.cache-test.output.cache-hit == 'true'
+        if: steps.cache-test.outputs.cache-hit == 'true'
         run: |
           echo "HELLO WORLD!"
 
       - name: not cache check
-        if: steps.cache-test.output.cache-hit == 'false'
+        if: steps.cache-test.outputs.cache-hit != 'true'
         run: |
           echo "NOT CACHE HELLO WORLD!"
