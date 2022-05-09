@@ -1,5 +1,4 @@
-# Check gen/ directory generatable using the modified contents
-name: CheckGenGeneratable
+name: CacheTest
 on:
   pull_request:
     branches:
@@ -8,12 +7,27 @@ on:
 jobs:
   check-generatable-by-proto:
     runs-on: ubuntu-latest
-    name: Generatable check
+    name: CacheTest
     steps:
       - uses: actions/checkout@v2
         name: checkout
       
-      - name: Run ./build.sh
+      - name: Cache node modules
+        id: cache-test
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: test.file.test
+          key: ${{env.cache-name}}
+
+      - name: cache check
+        if: steps.cache-test.output.cache-hit == 'true'
         run: |
-          cd idl
-          ./build.sh
+          echo "HELLO WORLD!"
+
+      - name: not cache check
+        if: steps.cache-test.output.cache-hit == 'false'
+        run: |
+          echo "NOT CACHE HELLO WORLD!"
