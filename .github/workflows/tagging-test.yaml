@@ -15,10 +15,10 @@ jobs:
 
     - name: Extract Recent Version
       run: |
-        recent_tag=$(git tag --sort=-v:refname | head -1)
-        echo "$(git tag)"
+        # recent_tag=$(git tag --sort=-v:refname | head -1)
+        recent_tag="test"
         echo "recent_tag=$recent_tag" >> $GITHUB_ENV
-        echo "tag name is $recent_tag"
+        echo "tag name is ${{ env.recent_tag }}"
 
     - name: test
       run: echo "${{ env.recent_tag }}"
