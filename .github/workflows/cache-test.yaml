@@ -1,33 +1,33 @@
-name: CacheTest
-on:
-  # pull_request:
-  #   branches:
-  #     - main
+# name: CacheTest
+# on:
+#   pull_request:
+#     branches:
+#       - main
 
-jobs:
-  check-generatable-by-proto:
-    runs-on: ubuntu-latest
-    name: CacheTest
-    steps:
-      - uses: actions/checkout@v2
-        name: checkout
+# jobs:
+#   check-generatable-by-proto:
+#     runs-on: ubuntu-latest
+#     name: CacheTest
+#     steps:
+#       - uses: actions/checkout@v2
+#         name: checkout
       
-      - name: Cache node modules
-        id: cache-test
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: test.file.test
-          key: ${{env.cache-name}}
+#       - name: Cache node modules
+#         id: cache-test
+#         uses: actions/cache@v3
+#         env:
+#           cache-name: cache-node-modules
+#         with:
+#           # npm cache files are stored in `~/.npm` on Linux/macOS
+#           path: test.file.test
+#           key: ${{env.cache-name}}
 
-      - name: cache check
-        if: steps.cache-test.outputs.cache-hit == 'true'
-        run: |
-          echo "HELLO WORLD!"
+#       - name: cache check
+#         if: steps.cache-test.outputs.cache-hit == 'true'
+#         run: |
+#           echo "HELLO WORLD!"
 
-      - name: not cache check
-        if: steps.cache-test.outputs.cache-hit != 'true'
-        run: |
-          echo "NOT CACHE HELLO WORLD!"
+#       - name: not cache check
+#         if: steps.cache-test.outputs.cache-hit != 'true'
+#         run: |
+#           echo "NOT CACHE HELLO WORLD!"

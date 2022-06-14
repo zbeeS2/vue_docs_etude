@@ -1,0 +1,27 @@
+# 1. 태그 정보 가져오기 git tag --sort=-v:refname | head -1
+# 2. 태깅 하기
+
+name: Release Tag
+on:
+  push:
+    branches:
+      - test
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Extract Recent Version
+      run: |
+        recent_tag=$(git tag --sort=-v:refname | head -1)
+        echo "recent_tag=$recent_tag" >> $GITHUB_ENV
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with: 
+        tag_name: ${{ env.recent_tag }} 
+        release_name: "What is this?" 
