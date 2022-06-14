@@ -14,10 +14,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Extract Recent Version
-      shell: bash
       run: |
         recent_tag=$(git tag --sort=-v:refname | head -1)
-        echo $(git tag --sort=-v:refname | head -1)
+        echo "$(git tag)""
         echo "recent_tag=$recent_tag" >> $GITHUB_ENV
         echo "tag name is $recent_tag"
 
