@@ -19,6 +19,9 @@ jobs:
         echo "recent_tag=$recent_tag" >> $GITHUB_ENV
         echo "tag name is $recent_tag"
 
+    - name: test
+      run: echo "${{ env.recent_tag }}"
+
     - name: Create Release
       uses: actions/create-release@v1
       env: 
