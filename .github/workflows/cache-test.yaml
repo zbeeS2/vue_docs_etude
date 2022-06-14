@@ -1,8 +1,8 @@
 name: CacheTest
 on:
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 jobs:
   check-generatable-by-proto:
