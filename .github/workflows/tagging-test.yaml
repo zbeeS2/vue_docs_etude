@@ -17,6 +17,7 @@ jobs:
       run: |
         recent_tag=$(git tag --sort=-v:refname | head -1)
         echo "recent_tag=$recent_tag" >> $GITHUB_ENV
+        echo "tag name is $recent_tag"
 
     - name: Create Release
       uses: actions/create-release@v1
@@ -24,4 +25,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with: 
         tag_name: ${{ env.recent_tag }} 
-        release_name: "What is this?" 
+        release_name: "What is this?"
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: false
+        prerelease: false
