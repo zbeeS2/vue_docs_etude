@@ -1,72 +1,72 @@
-# 1. 태그 정보 가져오기 git tag --sort=-v:refname | head -1
-# 2. 태깅 하기
+# # 1. 태그 정보 가져오기 git tag --sort=-v:refname | head -1
+# # 2. 태깅 하기
 
-name: Release Tag
-on:
-  push:
-    branches:
-      - main
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    # - name: Checkout
-    #   uses: actions/checkout@v3
-    #   with:
-    #     fetch-depth: 0
+# name: Release Tag
+# on:
+#   push:
+#     branches:
+#       - main
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     # - name: Checkout
+#     #   uses: actions/checkout@v3
+#     #   with:
+#     #     fetch-depth: 0
     
-    - name: Clone test repository
-      run: |
-        git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
+#     - name: Clone test repository
+#       run: |
+#         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
 
-    - name: Extract current version
-      working-directory: test
-      run: |
-        RECENT_TAG_NAME=$(git tag --sort=-v:refname | head -1)
-        echo "RECENT_TAG_NAME=$RECENT_TAG_NAME" >> $GITHUB_ENV
-        echo "current version is : $RECENT_TAG_NAME"
+#     - name: Extract current version
+#       working-directory: test
+#       run: |
+#         RECENT_TAG_NAME=$(git tag --sort=-v:refname | head -1)
+#         echo "RECENT_TAG_NAME=$RECENT_TAG_NAME" >> $GITHUB_ENV
+#         echo "current version is : $RECENT_TAG_NAME"
 
-    - name: Split tag strings
-      if: ${{ env.RECENT_TAG_NAME }} != ''
-      uses: jungwinter/split@v2
-      id: split
-      with:
-        msg: ${{ env.RECENT_TAG_NAME }}
-        separator: '.'
+#     - name: Split tag strings
+#       if: ${{ env.RECENT_TAG_NAME }} != ''
+#       uses: jungwinter/split@v2
+#       id: split
+#       with:
+#         msg: ${{ env.RECENT_TAG_NAME }}
+#         separator: '.'
     
-    - name: Create new version name
-      if: steps.split.outputs._0 != ''
-      run: |
-        A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
-        B="$B$A"
-        LAST_TAG_NUM=$B
-        NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
-        echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
+#     - name: Create new version name
+#       if: steps.split.outputs._0 != ''
+#       run: |
+#         A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
+#         B="$B$A"
+#         LAST_TAG_NUM=$B
+#         NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
+#         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
-    - name: Create release body
-      if: steps.split.outputs._0 != ''
-      run: |
-        touch release_body
-        echo "### What's Changed" >> release_body
-        # echo "* ${{github.event.head_commit.message}} : codebrick-corp/tokotalk-mono@${{ env.githash }} by @${{github.event.pusher.name}}" >> release_body
-        # echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
-        echo "* ${{github.event.head_commit.message}} by @${{github.event.pusher.name}}" >> release_body
-        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}" >> release_body
+#     - name: Create release body
+#       if: steps.split.outputs._0 != ''
+#       run: |
+#         touch release_body
+#         echo "### What's Changed" >> release_body
+#         # echo "* ${{github.event.head_commit.message}} : codebrick-corp/tokotalk-mono@${{ env.githash }} by @${{github.event.pusher.name}}" >> release_body
+#         # echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
+#         echo "* ${{github.event.head_commit.message}} by @${{github.event.pusher.name}}" >> release_body
+#         echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}" >> release_body
 
-    - name: Create Release
-      if: steps.split.outputs._0 != ''
-      uses: actions/create-release@v1
-      env: 
-        GITHUB_TOKEN: ${{ secrets.TEST }}
-      with: 
-        tag_name: ${{ env.NEW_TAG_NAME }} 
-        release_name: ${{ env.NEW_TAG_NAME }} 
-        body_path: ./release_body
-        repo: test
-        commitish: 2add21dd205d78c769f1897ce57d2e3288737921
+#     - name: Create Release
+#       if: steps.split.outputs._0 != ''
+#       uses: actions/create-release@v1
+#       env: 
+#         GITHUB_TOKEN: ${{ secrets.TEST }}
+#       with: 
+#         tag_name: ${{ env.NEW_TAG_NAME }} 
+#         release_name: ${{ env.NEW_TAG_NAME }} 
+#         body_path: ./release_body
+#         repo: test
+#         commitish: 2add21dd205d78c769f1897ce57d2e3288737921
 
-    - name: Error
-      if: steps.split.outputs._0 == ''
-      run: |
-        echo "Invalid Tag name!"
-        exit 0
+#     - name: Error
+#       if: steps.split.outputs._0 == ''
+#       run: |
+#         echo "Invalid Tag name!"
+#         exit 0
