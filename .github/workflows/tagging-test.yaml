@@ -20,7 +20,7 @@ jobs:
     
     - name: Clone test repository
       run: |
-        git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
+        cd .. & git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
 
     
 
