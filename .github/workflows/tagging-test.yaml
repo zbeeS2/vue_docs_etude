@@ -13,15 +13,25 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Extract Recent Version
+    - name: Extract recent version
       run: |
         # RECENT_TAG=$(git tag --sort=-v:refname | head -1)
         RECENT_TAG="v0.0.1"
-        TAG_ARR=$(echo $RECENT_TAG | tr "." "\n")
-        A=$(expr $((TAG_ARR[-1])) + 1)
+        echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
+
+    - name: Split tag strings
+      uses: jungwinter/split@v2
+        id: split
+        with:
+          msg: ${{env.RECENT_TAG}}
+          separator: '.'
+    
+    - name: Create new version name
+        if: steps.split.outputs._0 != ''
+        A=$(expr $(( ${{steps.split.outputs._3}} )) + 1)
         B="$B$A"
-        LAST_TAG_NUM="$B"
-        NEW_TAG_NAME="$TAG_ARR[0].$TAG_ARR[1].$LAST_TAG_NUM"
+        LAST_TAG_NUM=$B
+        NEW_TAG_NAME="${{steps.split.outputs._1}}.${{steps.split.outputs._2}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
     - name: test
