@@ -13,6 +13,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: test
+      run: |
+        echo $(pwd)
+        echo $(git rev-parse --short "$GITHUB_SHA")
+
     - name: Extract recent version
       run: |
         RECENT_TAG=$(git tag --sort=-v:refname | head -1)
