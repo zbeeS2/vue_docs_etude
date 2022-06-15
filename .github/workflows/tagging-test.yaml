@@ -54,6 +54,7 @@ jobs:
           Changes in this Release
           - First Change
           - Second Change
+        owner: "zbeeS2"
         repo: "test"
 
     - name: Error
