@@ -10,17 +10,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+    # - name: Checkout
+    #   uses: actions/checkout@v3
+    #   with:
+    #     fetch-depth: 0
     
     - name: Clone test repository
       run: |
         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/codebrick-corp/idl.git
 
     - name: Extract current version
-      working-directory: ./test
+      working-directory: test
       run: |
         RECENT_TAG=$(git tag --sort=-v:refname | head -1)
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
