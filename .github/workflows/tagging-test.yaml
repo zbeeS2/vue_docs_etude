@@ -28,6 +28,7 @@ jobs:
         echo "IDL_COMMIT_PUSHER_NAME=$(git log --pretty="%cn" -1)" >> $GITHUB_ENV
 
     - name: Check the changes
+      working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
         if [ "$RECENT_TAGS_COMMIT_HASH" == "IDL_COMMIT_HASH" ]; then
@@ -35,7 +36,7 @@ jobs:
           exit 0
         fi
         echo "Detecting changes."
-        
+
     - name: Split tag strings
       if: ${{ env.RECENT_TAG_NAME }} != ''
       uses: jungwinter/split@v2
