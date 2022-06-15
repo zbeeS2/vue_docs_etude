@@ -29,10 +29,10 @@ jobs:
     - name: Create new version name
       if: steps.split.outputs._0 != ''
       run: |
-        A=$(expr $(( ${{steps.split.outputs._3}} )) + 1)
+        A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
         B="$B$A"
         LAST_TAG_NUM=$B
-        NEW_TAG_NAME="${{steps.split.outputs._1}}.${{steps.split.outputs._2}}.$LAST_TAG_NUM"
+        NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
     - name: test
