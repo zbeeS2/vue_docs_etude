@@ -19,11 +19,10 @@ jobs:
         RECENT_TAG="v0.0.1"
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
 
-    - name: Split tag strings
-      uses: jungwinter/split@v2
+    - uses: jungwinter/split@v2
         id: split
         with:
-          msg: ${{env.RECENT_TAG}}
+          msg: ${{ env.RECENT_TAG }}
           separator: '.'
     
     - name: Create new version name
