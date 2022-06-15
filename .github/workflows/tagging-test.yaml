@@ -19,8 +19,9 @@ jobs:
       run: |
         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
 
-    - default:
-      working-directory: test
+    defaults:
+      run:
+        working-directory: test
 
     - name: Extract current version
       run: |
