@@ -15,15 +15,11 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: test
-      run: |
-        echo $(pwd)
-        echo $(git tag)
-
-    - name: Extract recent version
+    - name: Extract current version
       run: |
         RECENT_TAG=$(git tag --sort=-v:refname | head -1)
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
+        echo "current version is : $RECENT_TAG"
 
     - name: Split tag strings
       if: ${{ env.RECENT_TAG }} != ''
@@ -42,6 +38,16 @@ jobs:
         NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
+    - name: Create release body
+      if: steps.split.outputs._0 != ''
+      run: |
+        touch release_body
+        echo "### What's Changed" >> release_body
+        # echo "* ${{github.event.head_commit.message}} : codebrick-corp/tokotalk-mono@${{ env.githash }} by @${{github.event.pusher.name}}" >> release_body
+        # echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
+        echo "* ${{github.event.head_commit.message}} by @${{github.event.pusher.name}}" >> release_body
+        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
+
     - name: Create Release
       if: steps.split.outputs._0 != ''
       uses: actions/create-release@v1
@@ -49,11 +55,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TEST }}
       with: 
         tag_name: ${{ env.NEW_TAG_NAME }} 
-        release_name: "What is this?"
-        body: |
-          Changes in this Release
-          - First Change
-          - Second Change
+        release_name: ${{ env.NEW_TAG_NAME }} 
+        body_path: ./release_body
         repo: test
         commitish: 2add21dd205d78c769f1897ce57d2e3288737921
 
