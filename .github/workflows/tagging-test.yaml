@@ -27,16 +27,6 @@ jobs:
         echo "IDL_COMMIT_MESSAGE=$(git log --pretty="%s" -1)" >> $GITHUB_ENV
         echo "IDL_COMMIT_PUSHER_NAME=$(git log --pretty="%cn" -1)" >> $GITHUB_ENV
 
-    - name: Check the changes
-      working-directory: test
-      run: |
-        RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
-        if [ "$RECENT_TAGS_COMMIT_HASH" == "$IDL_COMMIT_HASH" ]; then
-          echo "No changes."
-          exit 1
-        fi
-        echo "Detecting changes."
-
     - name: Split tag strings
       if: success()
       uses: jungwinter/split@v2
@@ -44,9 +34,22 @@ jobs:
       with:
         msg: ${{ env.RECENT_TAG_NAME }}
         separator: '.'
+
+    - name: Check the changes
+      working-directory: test
+      run: |
+        RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
+        if [ "$RECENT_TAGS_COMMIT_HASH" == "$IDL_COMMIT_HASH" ]; then
+          echo "No changes."
+          IS_CHANGE=false
+          exit 0
+        fi
+        echo "Detecting changes."
+        IS_CHANGE=true
+        echo "IS_CHANGE=$IS_CHANGE" >> $GITHUB_ENV
     
     - name: Create new version name
-      if: success()
+      if: ${{ env.IS_CHANGE }}
       run: |
         A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
         B="$B$A"
