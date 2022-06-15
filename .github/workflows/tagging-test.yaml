@@ -15,8 +15,7 @@ jobs:
 
     - name: Extract recent version
       run: |
-        # RECENT_TAG=$(git tag --sort=-v:refname | head -1)
-        RECENT_TAG="v0.0.1"
+        RECENT_TAG=$(git tag --sort=-v:refname | head -1)
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
 
     - name: Split tag strings
@@ -35,18 +34,23 @@ jobs:
         NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
-    - name: test
-      run: echo ${{env.NEW_TAG_NAME}}
-    # - name: Create Release
-    #   uses: actions/create-release@v1
-    #   env: 
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with: 
-    #     tag_name: ${{ env.recent_tag }} 
-    #     release_name: "What is this?"
-    #     body: |
-    #       Changes in this Release
-    #       - First Change
-    #       - Second Change
-    #     draft: false
-    #     prerelease: false
+    - name: Create Release
+      if: steps.split.outputs._0 != ''
+      uses: actions/create-release@v1
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with: 
+        tag_name: ${{ env.NEW_TAG_NAME }} 
+        release_name: "What is this?"
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: false
+        prerelease: false
+
+    - name: Error
+      if: steps.split.outputs._0 == ''
+      run: |
+        echo "Invalid Tag name!"
+        exit 0
