@@ -58,7 +58,7 @@ jobs:
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
     - name: Create release body
-      if: success()
+      if: ${{ env.IS_CHANGE }}
       run: |
         touch release_body
         echo "### What's Changed" >> release_body
@@ -66,7 +66,7 @@ jobs:
         echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}" >> release_body
 
     - name: Create Release
-      if: success()
+      if: ${{ env.IS_CHANGE }}
       uses: actions/create-release@v1
       env: 
         GITHUB_TOKEN: ${{ secrets.TEST }}
