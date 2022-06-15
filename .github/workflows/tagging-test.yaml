@@ -16,11 +16,12 @@ jobs:
     - name: test
       run: |
         echo $(pwd)
-        echo $(git rev-parse --short "$GITHUB_SHA")
+        echo $(git tag)
 
     - name: Extract recent version
       run: |
-        RECENT_TAG=$(git tag --sort=-v:refname | head -1)
+        # RECENT_TAG=$(git tag --sort=-v:refname | head -1)
+        RECENT_TAG="v0.0.1"
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
 
     - name: Split tag strings
