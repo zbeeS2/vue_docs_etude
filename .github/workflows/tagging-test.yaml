@@ -19,7 +19,7 @@ jobs:
       run: |
         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
 
-    default:
+    - default:
       working-directory: test
 
     - name: Extract current version
