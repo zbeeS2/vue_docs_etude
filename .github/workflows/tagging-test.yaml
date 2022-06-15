@@ -51,7 +51,7 @@ jobs:
         # echo "* ${{github.event.head_commit.message}} : codebrick-corp/tokotalk-mono@${{ env.githash }} by @${{github.event.pusher.name}}" >> release_body
         # echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
         echo "* ${{github.event.head_commit.message}} by @${{github.event.pusher.name}}" >> release_body
-        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}"
+        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}" >> release_body
 
     - name: Create Release
       if: steps.split.outputs._0 != ''
