@@ -20,11 +20,11 @@ jobs:
 
     - name: Extract recent version
       run: |
-        # RECENT_TAG=$(git tag --sort=-v:refname | head -1)
-        RECENT_TAG="v0.0.1"
+        RECENT_TAG=$(git tag --sort=-v:refname | head -1)
         echo "RECENT_TAG=$RECENT_TAG" >> $GITHUB_ENV
 
     - name: Split tag strings
+      if: ${{ env.RECENT_TAG }} != ''
       uses: jungwinter/split@v2
       id: split
       with:
