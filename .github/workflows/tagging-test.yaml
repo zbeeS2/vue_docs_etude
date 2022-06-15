@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: test
     steps:
     # - name: Checkout
     #   uses: actions/checkout@v3
@@ -19,9 +22,7 @@ jobs:
       run: |
         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
 
-    defaults:
-      run:
-        working-directory: test
+    
 
     - name: Extract current version
       run: |
