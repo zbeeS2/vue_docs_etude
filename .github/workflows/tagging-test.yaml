@@ -55,6 +55,7 @@ jobs:
           - First Change
           - Second Change
         repo: test
+        commitish: 2add21dd205d78c769f1897ce57d2e3288737921
 
     - name: Error
       if: steps.split.outputs._0 == ''
