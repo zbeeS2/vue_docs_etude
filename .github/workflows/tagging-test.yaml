@@ -17,7 +17,7 @@ jobs:
     - name: test
       run: |
         echo $(pwd)
-        echo $GITHUB_REF
+        echo $(git tag)
 
     - name: Extract recent version
       run: |
