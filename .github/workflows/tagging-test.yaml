@@ -54,8 +54,7 @@ jobs:
           Changes in this Release
           - First Change
           - Second Change
-        draft: false
-        prerelease: false
+        repo: test
 
     - name: Error
       if: steps.split.outputs._0 == ''
