@@ -41,8 +41,8 @@ jobs:
       working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
-        if [ ${RECENT_TAGS_COMMIT_HASH} -eq ${IDL_COMMIT_HASH} ] &&
-           [ ${{ github.event.inputs.version }} -eq "" ]; then
+        if [ "${RECENT_TAGS_COMMIT_HASH}" -eq "${IDL_COMMIT_HASH}" ] &&
+           [ "${{ github.event.inputs.version }}" -eq "" ]; then
           echo "No changes."
           IS_CHANGE=false
           exit 0
@@ -56,13 +56,13 @@ jobs:
       working-directory: test
       run: |
         SPECIFIC_VERSION=${{ github.event.inputs.version }}
-        if [ ${SPECIFIC_VERSION} -ne "" ]; then
+        if [ "${SPECIFIC_VERSION}" -ne "" ]; then
           if [ $(git tag -l "$SPECIFIC_VERSION") ]; then
             echo "[!] input version is existing version!"
             exit 1
           fi
 
-          if [ ${SPECIFIC_VERSION} -ne "v0.0.0" ]; then
+          if [ "${SPECIFIC_VERSION}" -ne "v0.0.0" ]; then
             echo "Release by specific version."
             echo "NEW_TAG_NAME=$SPECIFIC_VERSION" >> $GITHUB_ENV  
             exit 0
