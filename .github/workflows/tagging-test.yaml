@@ -6,21 +6,23 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'If you want release specific version, input like format v0.0.0'
+        default: 'v0.0.0'
+        required: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # - name: Checkout
-    #   uses: actions/checkout@v3
-    #   with:
-    #     fetch-depth: 0
-    
     - name: Clone test repository
       run: |
         git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
-        echo "test" > $jobs.defaults.run
 
     - name: Extract current version
+      working-directory: test
       run: |
         echo "RECENT_TAG_NAME=$(git tag --sort=-v:refname | head -1)" >> $GITHUB_ENV
         echo "IDL_COMMIT_HASH=$(git log --pretty="%H" -1)" >> $GITHUB_ENV
@@ -36,6 +38,7 @@ jobs:
         separator: '.'
 
     - name: Check the changes
+      working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
         if [ "$RECENT_TAGS_COMMIT_HASH" == "$IDL_COMMIT_HASH" ]; then
@@ -48,8 +51,21 @@ jobs:
         echo "IS_CHANGE=$IS_CHANGE" >> $GITHUB_ENV
     
     - name: Create new version name
+      working-directory: test
       if: ${{ env.IS_CHANGE }}
       run: |
+        SPECIFIC_VERSION=${{ github.event.inputs.version }}
+        if [ $(git tag -l "$SPECIFIC_VERSION")]; then
+          echo "[!] input version is existing version!"
+          exit 1
+        fi
+
+        if [ "$SPECIFIV_VERSION" == "v0.0.0"]; then
+          echo "Release by specific version."
+          echo "NEW_TAG_NAME=$SPECIFIC_VESION" >> $GITHUB_ENV  
+          exit 0
+        fi
+
         A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
         B="$B$A"
         LAST_TAG_NUM=$B
