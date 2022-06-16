@@ -42,7 +42,7 @@ jobs:
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
         if [ "$RECENT_TAGS_COMMIT_HASH" == "$IDL_COMMIT_HASH" ] &&
-           ![ ${{ github.event.inputs.version }} ]; then
+           [ "${{ github.event.inputs.version }}" == "" ]; then
           echo "No changes."
           IS_CHANGE=false
           exit 0
@@ -62,7 +62,7 @@ jobs:
 
     - name: Override NEW_TAG_NAME to Manually input version
       working-directory: test
-      if: ${{ github.event.inputs.version }}
+      if: ${{ github.event.inputs.version }} != ""
       run: |
         SPECIFIC_VERSION=${{ github.event.inputs.version }}
         if [ $(git tag -l "$SPECIFIC_VERSION") ]; then
