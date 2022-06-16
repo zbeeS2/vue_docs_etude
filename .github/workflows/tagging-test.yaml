@@ -42,7 +42,7 @@ jobs:
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
         if [ "$RECENT_TAGS_COMMIT_HASH" == "$IDL_COMMIT_HASH" ] &&
-           [ "${{ github.event.inputs.version }}" == "${{ github.event.inputs.version.default }}" ]; then
+           ![ ${{ github.event.inputs.version }} ]; then
           echo "No changes."
           IS_CHANGE=false
           exit 0
@@ -52,26 +52,29 @@ jobs:
         echo "IS_CHANGE=$IS_CHANGE" >> $GITHUB_ENV
     
     - name: Create new version name
-      working-directory: test
       if: ${{ env.IS_CHANGE }}
       run: |
-        SPECIFIC_VERSION=${{ github.event.inputs.version }}
-        if [ $(git tag -l "$SPECIFIC_VERSION")]; then
-          echo "[!] input version is existing version!"
-          exit 1
-        fi
-
-        if [ "$SPECIFIV_VERSION" != "${{ github.event.inputs.version.default }}"]; then
-          echo "Release by specific version."
-          echo "NEW_TAG_NAME=$SPECIFIC_VESION" >> $GITHUB_ENV  
-          exit 0
-        fi
-
         A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
         B="$B$A"
         LAST_TAG_NUM=$B
         NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
+
+    - name: Override NEW_TAG_NAME to Manually input version
+      working-directory: test
+      if: ${{ github.event.inputs.version }}
+      run: |
+        SPECIFIC_VERSION=${{ github.event.inputs.version }}
+        if [ $(git tag -l "$SPECIFIC_VERSION") ]; then
+          echo "[!] input version is existing version!"
+          exit 1
+        fi
+
+        if [ "$SPECIFIV_VERSION" != "v0.0.0" ]; then
+          echo "Release by specific version."
+          echo "NEW_TAG_NAME=$SPECIFIC_VESION" >> $GITHUB_ENV  
+          exit 0
+        fi
 
     - name: Create release body
       if: ${{ env.IS_CHANGE }}
