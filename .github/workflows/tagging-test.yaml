@@ -61,8 +61,8 @@ jobs:
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
 
     - name: Override NEW_TAG_NAME to Manually input version
+      if: [ "${{ github.event.inputs.version }}" != "" ]
       working-directory: test
-      if: "${{ github.event.inputs.version }}" != ""
       run: |
         SPECIFIC_VERSION=${{ github.event.inputs.version }}
         if [ $(git tag -l "$SPECIFIC_VERSION") ]; then
