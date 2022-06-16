@@ -38,6 +38,7 @@ jobs:
         separator: '.'
 
     - name: Check the changes
+      shell: bash
       working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
