@@ -41,7 +41,7 @@ jobs:
       working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
-        if [ "${RECENT_TAGS_COMMIT_HASH}" -eq "${{ env.IDL_COMMIT_HASH }}" ] &&
+        if [ "$RECENT_TAGS_COMMIT_HASH" -eq "${{ env.IDL_COMMIT_HASH }}" ] &&
            [ "${{ github.event.inputs.version }}" -eq "" ]; then
           echo "No changes."
           IS_CHANGE=false
