@@ -64,7 +64,7 @@ jobs:
 
           if [ "$SPECIFIV_VERSION" != "v0.0.0" ]; then
             echo "Release by specific version."
-            echo "NEW_TAG_NAME=$SPECIFIC_VESION" >> $GITHUB_ENV  
+            echo "NEW_TAG_NAME=$SPECIFIC_VERSION" >> $GITHUB_ENV  
             exit 0
           fi
         fi
@@ -74,7 +74,7 @@ jobs:
         LAST_TAG_NUM=$B
         NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
         echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
-        
+        echo "new tag name is $NEW_TAG_NAME"
 
     - name: Create release body
       if: ${{ env.IS_CHANGE }}
