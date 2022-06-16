@@ -42,17 +42,17 @@ jobs:
       working-directory: test
       run: |
         RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
-        if [ "${RECENT_TAGS_COMMIT_HASH}" == "${{ env.IDL_COMMIT_HASH }}" ]; then
-          echo "No changes."
-          IS_CHANGE=false
-          exit 0
-        fi
 
         if [ -z ${{ github.event.inputs.version }}]; then
           echo "Release by specific version."
+        elif [ "${RECENT_TAGS_COMMIT_HASH}" == "${{ env.IDL_COMMIT_HASH }}" ]; then
+          echo "No changes."
+          IS_CHANGE=false
+          exit 0
         else
           echo "Detecting changes."
         fi
+
         IS_CHANGE=true
         echo "IS_CHANGE=$IS_CHANGE" >> $GITHUB_ENV
     
