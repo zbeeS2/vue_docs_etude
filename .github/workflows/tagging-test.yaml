@@ -1,10 +1,6 @@
 name: IdlManualRelease
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       version:
@@ -40,7 +36,7 @@ jobs:
       run: |
         recent_tag_name=$(git tag --sort=-v:refname | head -1)
         echo "recent_tag_name=$recent_tag_name" >> $GITHUB_ENV
-        
+
         recent_tags_top_commit_hash=$(git log $recent_tag_name | grep commit | head -1 | awk '{print $2}')
         echo "recent_tags_top_commit_hash=$recent_tags_top_commit_hash" >> $GITHUB_ENV
 
