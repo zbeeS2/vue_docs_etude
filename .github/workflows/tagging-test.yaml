@@ -126,7 +126,7 @@ jobs:
         release_name: ${{ env.new_tag_name }}
         body_path: ./release_body
         repo: test
-        commitish: ${{ env.idl_commit_hash }}
+        commitish: ${{ env.recent_tags_top_commit_hash }}
         
     - name: Cleanup job
       if: always()
