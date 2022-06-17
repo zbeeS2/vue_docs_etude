@@ -101,6 +101,7 @@ jobs:
         echo "new tag name is $new_tag_name"
 
     - name: Make release body
+      working-directory: ${{ env.working_directory }}
       if: ${{ env.is_change }}
       run: |
         cd ${{ env.working_directory }}
@@ -128,7 +129,7 @@ jobs:
       with: 
         tag_name: ${{ env.new_tag_name }} 
         release_name: ${{ env.new_tag_name }}
-        body_path: ./release_body
+        body_path: ${{ env.working_directory }}/release_body
         repo: test
         commitish: ${{ env.recent_commit_hash }}
         
