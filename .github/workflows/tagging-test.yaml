@@ -103,9 +103,6 @@ jobs:
     - name: Make release body
       if: ${{ env.is_change }}
       run: |
-        ifs_backup=$IFS
-        IFS=$(echo -en "\n")
-        
         cd ${{ env.working_directory }}
         idl_commit_messages=$(git log --pretty="%s" -100)
         idl_commit_pusher_names=$(git log --pretty="%cn" -100)
@@ -118,14 +115,12 @@ jobs:
         echo "### What's Changed" >> release_body
         for ((i=0; i<${{env.recent_tags_top_commit_offset}}; i++))
         do
-          echo "* ${commit_messages[i]} by @${pusher_names[i]}" >> release_body
+          echo "* ${idl_commit_messages[i]} by @${idl_commit_pusher_names[i]}" >> release_body
         done
         
-        echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
+        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
 
         echo $(cat release_body)
-
-        IFS=$ifs_backup
 
     - name: Create release
       if: ${{ env.is_change }}
