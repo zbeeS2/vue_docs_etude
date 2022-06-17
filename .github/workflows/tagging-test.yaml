@@ -110,7 +110,7 @@ jobs:
 
         touch release_body
         echo "### What's Changed" >> release_body
-        for i in $(seq 0 ${{ env.recent_tags_top_commit_offset }})
+        for ((i=0; i<=env.recent_tags_top_commit_offset; i++))
         do
           echo "message is ${idl_commit_messages[i]}"
           echo "name is ${idl_commit_pusher_names[i]}"
