@@ -38,9 +38,11 @@ jobs:
     - name: Calculate recent top commit hash's offset
       working-directory: ${{ env.working_directory }}
       run: |
-        echo $(pwd)
-        echo "recent_tag_name=$(git tag --sort=-v:refname | head -1)" >> $GITHUB_ENV
-        echo "recent_tags_top_commit_hash=$(git log $recent_tag_name | grep commit | head -1 | awk '{print $2}')" >> $GITHUB_ENV
+        recent_tag_name=$(git tag --sort=-v:refname | head -1)
+        echo "recent_tag_name=$recent_tag_name" >> $GITHUB_ENV
+        
+        recent_tags_top_commit_hash=$(git log $recent_tag_name | grep commit | head -1 | awk '{print $2}')
+        echo "recent_tags_top_commit_hash=$recent_tags_top_commit_hash" >> $GITHUB_ENV
 
         # Calculate recent_tags_top_commit_hash's offset
         top_commit_offset=0
