@@ -1,11 +1,10 @@
-# 1. 태그 정보 가져오기 git tag --sort=-v:refname | head -1
-# 2. 태깅 하기
+name: IdlManualRelease
 
-name: Release Tag
 on:
   push:
     branches:
       - main
+
   workflow_dispatch:
     inputs:
       version:
@@ -14,91 +13,122 @@ on:
         required: true
 
 jobs:
-  build:
+  release-new-version:
     runs-on: ubuntu-latest
     steps:
-    - name: Clone test repository
-      run: |
-        git clone https://$GITHUB_ACTOR:${{ secrets.TEST }}@github.com/zbeeS2/test.git
+    - uses: actions/checkout@v2
+      name: Checkout
 
-    - name: Extract current version
-      working-directory: test
+    - name: Make temp work directory
       run: |
-        echo "RECENT_TAG_NAME=$(git tag --sort=-v:refname | head -1)" >> $GITHUB_ENV
-        echo "IDL_COMMIT_HASH=$(git log --pretty="%H" -1)" >> $GITHUB_ENV
-        echo "IDL_COMMIT_MESSAGE=$(git log --pretty="%s" -1)" >> $GITHUB_ENV
-        echo "IDL_COMMIT_PUSHER_NAME=$(git log --pretty="%cn" -1)" >> $GITHUB_ENV
+        repo_parents=$(git rev-parse --short "$GITHUB_SHA")
+        echo "repo_parents=$repo_parents" >> $GITHUB_ENV
+        mkdir $repo_parents
 
-    - name: Split tag strings
-      if: success()
-      uses: jungwinter/split@v2
-      id: split
-      with:
-        msg: ${{ env.RECENT_TAG_NAME }}
-        separator: '.'
+    - name: Clone IDL repository
+      working-directory: ${{ env.repo_parents }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.PRIVATE_GITHUB_TOKEN }}
+      run: |
+        echo ${{ env.repo_parents }}
+        echo $(pwd)
+        git clone https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/zbeeS2/test.git
+        echo "working_directory=${{ env.repo_parents }}/test" >> $GITHUB_ENV
+
+    - name: Calculate recent top commit hash's offset
+      working-directory: ${{ env.working_directory }}
+      run: |
+        echo "recent_tag_name=$(git tag --sort=-v:refname | head -1)" >> $GITHUB_ENV
+        echo "recent_tags_top_commit_hash=$(git log $recent_tag_name | grep commit | head -1 | awk '{print $2}')" >> $GITHUB_ENV
+
+        # Calculate recent_tags_top_commit_hash's offset
+        top_commit_offset=0
+        commit_logs=$(git log --pretty="%H" -100)
+        echo "recent tag name is $recent_tag_name"
+        for commit_log in $commit_logs
+        do
+          echo "commit log is $commit_log"
+          if [ "${recent_tags_top_commit_hash}" == "${commit_log}" ]; then
+            break
+          fi
+          top_commit_offset=$((top_commit_offset + 1))
+        done
+        
+        echo "recent_tags_top_commit_offset=$top_commit_offset" >> $GITHUB_ENV
 
     - name: Check the changes
-      shell: bash
-      working-directory: test
+      working-directory: ${{ env.working_directory }}
       run: |
-        RECENT_TAGS_COMMIT_HASH=$(git log $RECENT_TAG_NAME | grep commit | head -1 | awk '{print $2}')
-        if [ "${RECENT_TAGS_COMMIT_HASH}" == "${{ env.IDL_COMMIT_HASH }}" ] &&
-           [ "${{ github.event.inputs.version }}" == "" ]; then
+        if [ ${{ env.recent_tags_top_commit_offset }} == "0" ]; then
           echo "No changes."
-          IS_CHANGE=false
           exit 0
         fi
         echo "Detecting changes."
-        IS_CHANGE=true
-        echo "IS_CHANGE=$IS_CHANGE" >> $GITHUB_ENV
-    
-    - name: Create new version name
-      if: ${{ env.IS_CHANGE }}
-      working-directory: test
-      run: |
-        SPECIFIC_VERSION=${{ github.event.inputs.version }}
-        if [ "${SPECIFIC_VERSION}" != "" ]; then
-          if [ $(git tag -l "$SPECIFIC_VERSION") ]; then
-            echo "[!] input version is existing version!"
-            exit 1
-          fi
+        echo "is_change=true" >> $GITHUB_ENV
 
-          if [ "${SPECIFIC_VERSION}" != "v0.0.0" ]; then
-            echo "Release by specific version."
-            echo "NEW_TAG_NAME=$SPECIFIC_VERSION" >> $GITHUB_ENV  
-            exit 0
-          fi
+    - name: Split tag string
+      if: ${{ env.is_change }}
+      uses: jungwinter/split@v2
+      id: split
+      with:
+        msg: ${{ env.recent_tag_name }}
+        separator: '.'
+    
+    - name: Generate new version name
+      if: ${{ env.is_change }}
+      working-directory: ${{ env.working_directory }}
+      run: |
+        specific_version=${{ github.event.inputs.version }}
+
+        if [ $(git tag -l "$specific_version") ]; then
+          echo "[!] input version is existing version!"
+          exit 1
+        fi
+
+        if [ "${specific_version}" != "v0.0.0" ]; then
+          echo "Release by specific version."
+          echo "new_tag_name=$specific_version" >> $GITHUB_ENV  
+          exit 0
         fi
 
         A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
         B="$B$A"
-        LAST_TAG_NUM=$B
-        NEW_TAG_NAME="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$LAST_TAG_NUM"
-        echo "NEW_TAG_NAME=$NEW_TAG_NAME" >> $GITHUB_ENV
-        echo "new tag name is $NEW_TAG_NAME"
+        last_tag_num=$B
+        new_tag_name="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$last_tag_num"
+        echo "new_tag_name=$new_tag_name" >> $GITHUB_ENV
+        echo "new tag name is $new_tag_name"
 
-    - name: Create release body
-      if: ${{ env.IS_CHANGE }}
+    - name: Make release body
+      if: ${{ env.is_change }}
       run: |
+        cd ${{ env.working_directory }}
+        idl_commit_messages=$(git log --pretty="%s" -100)
+        idl_commit_pusher_names=$(git log --pretty="%cn" -100)
+        cd -
+
         touch release_body
         echo "### What's Changed" >> release_body
-        echo "* ${{ env.IDL_COMMIT_MESSAGE }} by @${{ env.IDL_COMMIT_PUSHER_NAME }}" >> release_body
-        echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.RECENT_TAG_NAME }}...${{ env.NEW_TAG_NAME }}" >> release_body
+        recent_tags_top_commit_offset_to_int=$(( ${{ env.recent_tags_top_commit_offset }} ))
+        for i in $(seq 0 ${recent_tags_top_commit_offset_to_int})
+        do
+          echo "* ${{ env.idl_commit_messages }}[i] by @${{ env.idl_commit_message }}[i]" >> release_body
+        done
+        
+        echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
 
-    - name: Create Release
-      if: ${{ env.IS_CHANGE }}
+    - name: Create release
+      if: ${{ env.is_change }}
       uses: actions/create-release@v1
       env: 
-        GITHUB_TOKEN: ${{ secrets.TEST }}
+        GITHUB_TOKEN: ${{ secrets.PRIVATE_GITHUB_TOKEN }}
       with: 
-        tag_name: ${{ env.NEW_TAG_NAME }} 
-        release_name: ${{ env.NEW_TAG_NAME }} 
+        tag_name: ${{ env.new_tag_name }} 
+        release_name: ${{ env.new_tag_name }}
         body_path: ./release_body
-        repo: test
-        commitish: ${{ env.IDL_COMMIT_HASH }}
-
-    - name: Error
-      if: steps.split.outputs._0 == ''
+        repo: idl
+        commitish: ${{ env.idl_commit_hash }}
+        
+    - name: Cleanup job
+      if: always()
       run: |
-        echo "Invalid Tag name!"
-        exit 0
+        rm -rf ${{ env.repo_parents }}
