@@ -109,7 +109,7 @@ jobs:
         echo "### What's Changed" >> release_body
         for i in $(seq 0 ${{ env.recent_tags_top_commit_offset }})
         do
-          echo "* ${{ env.idl_commit_messages }}[i] by @${{ env.idl_commit_message }}[i]" >> release_body
+          echo "* ${env.idl_commit_messages}[i] by @${env.idl_commit_message}[i]" >> release_body
         done
         
         echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
