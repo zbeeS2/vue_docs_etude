@@ -125,7 +125,7 @@ jobs:
         tag_name: ${{ env.new_tag_name }} 
         release_name: ${{ env.new_tag_name }}
         body_path: ./release_body
-        repo: idl
+        repo: test
         commitish: ${{ env.idl_commit_hash }}
         
     - name: Cleanup job
