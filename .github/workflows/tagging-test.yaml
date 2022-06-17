@@ -54,7 +54,7 @@ jobs:
         done
         
 
-        recent_commit_hash=$(commit_logs | head -1)
+        recent_commit_hash=$(git log --pretty="%H" -1)
         echo "recent_commit_hash=$recent_commit_hash" >> $GITHUB_ENV
         echo "recent_tags_top_commit_offset=$top_commit_offset" >> $GITHUB_ENV
 
