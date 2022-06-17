@@ -109,6 +109,8 @@ jobs:
         echo "### What's Changed" >> release_body
         for i in $(seq 0 ${{ env.recent_tags_top_commit_offset }})
         do
+          echo "message is ${idl_commit_messages[i]}"
+          echo "name is ${idl_commit_pusher_names[i]}"
           echo "* ${idl_commit_messages[i]} by @${idl_commit_pusher_names[i]}" >> release_body
         done
         
