@@ -58,7 +58,7 @@ jobs:
     - name: Check the changes
       working-directory: ${{ env.working_directory }}
       run: |
-        if [ ${{ env.recent_tags_top_commit_offset }} == "0" ]; then
+        if [ ${{ env.recent_tags_top_commit_offset }} == 0 ]; then
           echo "No changes."
           exit 0
         fi
@@ -107,8 +107,7 @@ jobs:
 
         touch release_body
         echo "### What's Changed" >> release_body
-        recent_tags_top_commit_offset_to_int=$(( ${{ env.recent_tags_top_commit_offset }} ))
-        for i in $(seq 0 ${recent_tags_top_commit_offset_to_int})
+        for i in $(seq 0 ${{ env.recent_tags_top_commit_offset }})
         do
           echo "* ${{ env.idl_commit_messages }}[i] by @${{ env.idl_commit_message }}[i]" >> release_body
         done
