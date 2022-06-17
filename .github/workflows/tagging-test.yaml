@@ -114,7 +114,7 @@ jobs:
         commit_offset=$((${recent_tags_top_commit_offset}+1))
         touch release_body
         echo "### What's Changed" >> release_body
-        echo $(git log --pretty="* %s by @%cn -${commit_offset}") >> release_body
+        echo $(git log --pretty='* %s by @%cn' -${commit_offset}) >> release_body
         echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
 
         echo $(cat release_body)
