@@ -103,9 +103,9 @@ jobs:
       run: |
         cd ${{ env.working_directory }}
         idl_commit_messages=$(git log --pretty="%s" -100)
-        readarray -t commit_messages < < ${idl_commit_messages}
+        readarray -t commit_messages << ${idl_commit_messages}
         idl_commit_pusher_names=$(git log --pretty="%cn" -100)
-        readarray -t pusher_names < < ${idl_commit_pusher_names}
+        readarray -t pusher_names << ${idl_commit_pusher_names}
         cd -
 
         touch release_body
