@@ -114,6 +114,8 @@ jobs:
         
         echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
 
+        echo $(cat release_body)
+
     - name: Create release
       if: ${{ env.is_change }}
       uses: actions/create-release@v1
