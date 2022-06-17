@@ -104,14 +104,6 @@ jobs:
       working-directory: ${{ env.working_directory }}
       if: ${{ env.is_change }}
       run: |
-        cd ${{ env.working_directory }}
-        idl_commit_messages=$(git log --pretty="%s" -100)
-        idl_commit_pusher_names=$(git log --pretty="%cn" -100)
-
-        read -r -a commit_messages <<< "$idl_commit_messages"
-        read -r -a pusher_names <<< "$idl_commit_pusher_names"
-        cd -
-
         commit_offset=${{ env.recent_tags_top_commit_offset }}
         commit_count=$((commit_offset+1))
         touch release_body
