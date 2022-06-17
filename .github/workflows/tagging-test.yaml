@@ -53,6 +53,9 @@ jobs:
           top_commit_offset=$((top_commit_offset + 1))
         done
         
+
+        recent_commit_hash=$(commit_logs | head -1)
+        echo "recent_commit_hash=$recent_commit_hash" >> $GITHUB_ENV
         echo "recent_tags_top_commit_offset=$top_commit_offset" >> $GITHUB_ENV
 
     - name: Check the changes
@@ -134,7 +137,7 @@ jobs:
         release_name: ${{ env.new_tag_name }}
         body_path: ./release_body
         repo: test
-        commitish: ${{ env.recent_tags_top_commit_hash }}
+        commitish: ${{ env.recent_commit_hash }}
         
     - name: Cleanup job
       if: always()
