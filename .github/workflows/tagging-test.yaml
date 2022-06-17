@@ -101,7 +101,7 @@ jobs:
       if: ${{ env.is_change }}
       run: |
         ifs_backup=$IFS
-        IFS=$(echo -en "\n\b")
+        IFS=$(echo -en "\n")
 
         cd ${{ env.working_directory }}
         idl_commit_messages=$(git log --pretty="%s" -100)
