@@ -108,7 +108,7 @@ jobs:
         commit_count=$((commit_offset+1))
         touch release_body
         echo "### What's Changed" >> release_body
-        echo $(git log --pretty='* %s by @%cn' -${commit_count}) >> release_body
+        git log --pretty='* %s by @%ae' -${commit_count} >> release_body
         echo "**Full Changelog**: https://github.com/zbeeS2/test/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
 
         echo $(cat release_body)
