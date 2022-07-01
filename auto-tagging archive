@@ -1,0 +1,120 @@
+
+  # Release new version to idl
+  release-new-version:
+    needs: push-to-idl
+    runs-on: [general-x64]
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout
+
+    - name: Make temp work directory
+      run: |
+        repo_parents=$(git rev-parse --short "$GITHUB_SHA")
+        echo "repo_parents=$repo_parents" >> $GITHUB_ENV
+        mkdir $repo_parents
+
+    - name: Clone IDL repository
+      working-directory: ${{ env.repo_parents }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.PRIVATE_GITHUB_TOKEN }}
+      run: |
+        echo ${{ env.repo_parents }}
+        echo $(pwd)
+        git clone https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/codebrick-corp/idl.git
+        echo "working_directory=${{ env.repo_parents }}/idl" >> $GITHUB_ENV
+
+    - name: Calculate recent top commit hash's offset
+      working-directory: ${{ env.working_directory }}
+      run: |
+        echo "recent_tag_name=$(git tag --sort=-v:refname | head -1)" >> $GITHUB_ENV
+        echo "recent_tags_top_commit_hash=$(git log $recent_tag_name | grep commit | head -1 | awk '{print $2}')" >> $GITHUB_ENV
+
+        # Calculate recent_tags_top_commit_hash's offset
+        top_commit_offset=0
+        commit_logs=$(git log --pretty="%H" -100)
+        for commit_log in $commit_logs
+        do
+          if [ "${recent_tags_top_commit_hash}" == "${commit_log}" ]; then
+            break
+          fi
+          top_commit_offset=$((top_commit_offset + 1))
+        done
+        
+        echo "recent_tags_top_commit_offset=$top_commit_offset" >> $GITHUB_ENV
+
+    - name: Check the changes
+      working-directory: ${{ env.working_directory }}
+      run: |
+        if [ ${{ env.recent_tags_top_commit_offset }} == "0" ]; then
+          echo "No changes."
+          exit 0
+        fi
+        echo "Detecting changes."
+        echo "is_change=true" >> $GITHUB_ENV
+
+    - name: Split tag string
+      if: ${{ env.is_change }}
+      uses: jungwinter/split@v2
+      id: split
+      with:
+        msg: ${{ env.recent_tag_name }}
+        separator: '.'
+    
+    - name: Generate new version name
+      if: ${{ env.is_change }}
+      working-directory: ${{ env.working_directory }}
+      run: |
+        specific_version=${{ github.event.inputs.version }}
+
+        if [ $(git tag -l "$specific_version") ]; then
+          echo "[!] input version is existing version!"
+          exit 1
+        fi
+
+        if [ "${specific_version}" != "v0.0.0" ]; then
+          echo "Release by specific version."
+          echo "new_tag_name=$specific_version" >> $GITHUB_ENV  
+          exit 0
+        fi
+
+        A=$(expr $(( ${{steps.split.outputs._2}} )) + 1)
+        B="$B$A"
+        last_tag_num=$B
+        new_tag_name="${{steps.split.outputs._0}}.${{steps.split.outputs._1}}.$last_tag_num"
+        echo "new_tag_name=$new_tag_name" >> $GITHUB_ENV
+        echo "new tag name is $new_tag_name"
+
+    - name: Make release body
+      if: ${{ env.is_change }}
+      run: |
+        cd ${{ env.working_directory }}
+        idl_commit_messages=$(git log --pretty="%s" -100)
+        idl_commit_pusher_names=$(git log --pretty="%cn" -100)
+        cd -
+
+        touch release_body
+        echo "### What's Changed" >> release_body
+        recent_tags_top_commit_offset_to_int=$(( ${{ env.recent_tags_top_commit_offset }} ))
+        for i in $(seq 0 ${recent_tags_top_commit_offset_to_int})
+        do
+          echo "* ${{ env.idl_commit_messages }}[i] by @${{ env.idl_commit_message }}[i]" >> release_body
+        done
+        
+        echo "**Full Changelog**: https://github.com/codebrick-corp/idl/compare/${{ env.recent_tag_name }}...${{ env.new_tag_name }}" >> release_body
+
+    - name: Create release
+      if: ${{ env.is_change }}
+      uses: actions/create-release@v1
+      env: 
+        GITHUB_TOKEN: ${{ secrets.PRIVATE_GITHUB_TOKEN }}
+      with: 
+        tag_name: ${{ env.new_tag_name }} 
+        release_name: ${{ env.new_tag_name }}
+        body_path: ./release_body
+        repo: idl
+        commitish: ${{ env.idl_commit_hash }}
+        
+    - name: Cleanup job
+      if: always()
+      run: |
+        rm -rf ${{ env.repo_parents }}
